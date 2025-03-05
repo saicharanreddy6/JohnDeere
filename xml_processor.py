@@ -2,7 +2,6 @@ import xml.etree.ElementTree as ET
 import csv
 import logging
 
-# Set up logging for production use
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
 
@@ -40,13 +39,11 @@ class XMLProcessor:
         """
         root = self.tree.getroot()
         data = []
-        # Use "omsection" as the section element.
         for section in root.findall(".//omsection"):
             section_head = section.find("head")
             section_title = self.get_full_text(section_head) if section_head is not None else "No Section Title"
             blocks = section.findall("block")
             if not blocks:
-                # No block elements; extract content directly from the section.
                 content = self.get_content_from_element(section)
                 data.append({
                     'section': section_title,
@@ -71,12 +68,10 @@ class XMLProcessor:
         Also converts any contained <table> elements to Markdown.
         """
         texts = []
-        # Extract text from <para> tags
         for para in element.findall(".//para"):
             para_text = para.text.strip() if para.text else ""
             if para_text:
                 texts.append(para_text)
-        # Convert table elements to Markdown if present
         for table in element.findall(".//table"):
             md_table = self.convert_table_to_markdown(table)
             if md_table:
@@ -90,10 +85,8 @@ class XMLProcessor:
         """
         rows = []
         for row in table_element.findall(".//row"):
-            # Try to extract cells from <entry> tags (common in complex DTDs)
             cells = [cell.text.strip() if cell.text else "" for cell in row.findall(".//entry")]
-            if not cells:
-                # Fallback: use <cell> if <entry> is not found.
+            if not cells:  
                 cells = [cell.text.strip() if cell.text else "" for cell in row.findall(".//cell")]
             if cells:
                 rows.append(cells)
@@ -107,7 +100,6 @@ class XMLProcessor:
         for row in rows[1:]:
             md_lines.append("| " + " | ".join(row) + " |")
         return "\n".join(md_lines)
-
     def store_data_in_csv(self, data, output_file):
         """
         Writes the extracted data to a CSV file. 'data' is a list of dictionaries with
@@ -124,10 +116,8 @@ class XMLProcessor:
         except Exception as e:
             logging.error(f"Error writing CSV file: {e}")
             raise
-
-
 def main():
-    input_file = "omdxe11330.xml"  # Ensure this file is in your working directory
+    input_file = "omdxe11330.xml"  #my XML file
     output_csv = "output.csv"
     try:
         processor = XMLProcessor(input_file)
