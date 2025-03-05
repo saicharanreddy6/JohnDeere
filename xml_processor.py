@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 class XMLProcessor:
     """
     Processes an XML file by extracting text data based on sections and subsections.
-    In this version, each <omsection> element is considered a section. If it contains
+    In the version I used, each <omsection> element is considered a section. If it contains
     <block> children, each block is treated as a subsection; otherwise, the section's
     own content is used. Any <para> elements are collected and any table elements are
     converted to Markdown.
